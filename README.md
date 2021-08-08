@@ -1,4 +1,5 @@
 # battleship
-Battleship game in Java
+Code to model a battleship game.
+To compile, run tests and run main:
 
-Code to model a battleship game. 
+`mvn compile test exec:java -Dexec.mainClass="org.game.battleship.Main"`

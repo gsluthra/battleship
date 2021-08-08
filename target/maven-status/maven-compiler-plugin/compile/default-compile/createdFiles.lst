@@ -1,0 +1,8 @@
+org/game/battleship/Orientation.class
+org/game/battleship/Ship$ShipBlock.class
+org/game/battleship/Ship.class
+org/game/battleship/exceptions/IllegalMoveException.class
+org/game/battleship/Main.class
+org/game/battleship/GameBoard.class
+org/game/battleship/Coordinate.class
+org/game/battleship/exceptions/ShipPlacementOnBoardException.class
