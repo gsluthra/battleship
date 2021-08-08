@@ -132,7 +132,7 @@ class GameBoardTest {
     }
 
     @Test
-    public void shouldBeAbleToPlace4ShipsIfTheyDontOverlap() throws ShipPlacementOnBoardException {
+    public void shouldBeAbleToPlace4ShipsIfTheyDontOverlapAndPrintBoard() throws ShipPlacementOnBoardException, IllegalMoveException {
         GameBoard board = new GameBoard(10,15);
         Ship ship1 = new Ship("Ship1", 4);
         Ship ship2 = new Ship("Ship2", 5);
@@ -151,6 +151,12 @@ class GameBoardTest {
         board.shootAt(new Coordinate(9,2));
         board.shootAt(new Coordinate(9,3));
         board.shootAt(new Coordinate(9,4));
+
+        board.shootAt((new Coordinate(1, 6)));
+        board.shootAt((new Coordinate(6, 6)));
+        board.shootAt((new Coordinate(2, 6)));
+        board.shootAt((new Coordinate(9, 13)));
+        board.shootAt((new Coordinate(8, 14)));
 
         board.printBoard();
     }
@@ -181,7 +187,7 @@ class GameBoardTest {
     }
 
     @Test
-    public void shouldSayShipNotShot() throws ShipPlacementOnBoardException {
+    public void shouldSayShipNotShot() throws ShipPlacementOnBoardException, IllegalMoveException {
         GameBoard board = new GameBoard(10,10);
         Ship ship1 = new Ship("Destroyer", 4);
         board.placeShip(new Coordinate(1,1), Orientation.Horizontal, ship1);
@@ -189,7 +195,7 @@ class GameBoardTest {
     }
 
     @Test
-    public void shouldSayShipShot() throws ShipPlacementOnBoardException {
+    public void shouldSayShipShot() throws ShipPlacementOnBoardException, IllegalMoveException {
         GameBoard board = new GameBoard(10,10);
         Ship ship1 = new Ship("Destroyer", 4);
         board.placeShip(new Coordinate(1,1), Orientation.Horizontal, ship1);
@@ -197,7 +203,7 @@ class GameBoardTest {
     }
 
     @Test
-    public void shouldSayShipIsSunkIfFullyBombed() throws ShipPlacementOnBoardException {
+    public void shouldSayShipIsSunkIfFullyBombed() throws ShipPlacementOnBoardException, IllegalMoveException {
         GameBoard board = new GameBoard(10,10);
         Ship ship = new Ship("Destroyer", 4);
         board.placeShip(new Coordinate(1,1), Orientation.Horizontal, ship);
@@ -210,5 +216,72 @@ class GameBoardTest {
         assertTrue(ship.isSunk());
     }
 
+    @Test
+    public void shouldCountTwoSunkShipsCorrectly() throws ShipPlacementOnBoardException, IllegalMoveException {
+        GameBoard board = createGameWithDestroyerShipAtCoordinate(new Coordinate(1,1), Orientation.Vertical); //Ship1
+        board.placeShip(new Coordinate(2,2), Orientation.Vertical, new Ship("Ship2", 3));
+        board.placeShip(new Coordinate(5,5), Orientation.Vertical, new Ship("Ship3", 4));
 
+        //Sink Ship 1
+        board.shootAt(new Coordinate(1,1));
+        board.shootAt(new Coordinate(1,2));
+        board.shootAt(new Coordinate(1,3));
+        board.shootAt(new Coordinate(1,4));
+
+        //Sink Ship 2
+        board.shootAt(new Coordinate(2,2));
+        board.shootAt(new Coordinate(2,3));
+        board.shootAt(new Coordinate(2,4));
+
+        board.shootAt(new Coordinate(5,5)); //One shot on Ship 3
+
+        assertEquals(1, board.getNumberOfShipsAfloat());
+        assertEquals(2, board.getNumberOfShipsSunk());
+    }
+
+    @Test
+    public void shouldKeepRecordOfWhereAllShotsWereFiredEvenIfShipWasNotHit() throws ShipPlacementOnBoardException, IllegalMoveException {
+        GameBoard board = new GameBoard(10,10);
+        Ship ship = new Ship("Destroyer", 4);
+        Coordinate coordinate1 = new Coordinate(1, 1);
+        board.placeShip(coordinate1, Orientation.Horizontal, ship);
+
+        Coordinate coordinate2 = new Coordinate(2, 1);
+        Coordinate coordinate3 = new Coordinate(10, 10);
+        Coordinate coordinate4 = new Coordinate(8, 7);
+
+        //Shots which hit the ship
+        board.shootAt(coordinate1);
+        board.shootAt(coordinate2);
+        //Shots which don't hit the ship
+        board.shootAt(coordinate3);
+        board.shootAt(coordinate4);
+
+        assertTrue(board.isCoordinateAlreadyHit(coordinate1));
+        assertTrue(board.isCoordinateAlreadyHit(coordinate2));
+        assertTrue(board.isCoordinateAlreadyHit(coordinate3));
+        assertTrue(board.isCoordinateAlreadyHit(coordinate4));
+
+        assertFalse(board.isCoordinateAlreadyHit(new Coordinate(8,9)));
+    }
+
+    @Test
+    public void shouldNotAllowAShotWhichAlreadyHasBeenShotAtInPrevMove() throws ShipPlacementOnBoardException, IllegalMoveException {
+        GameBoard board = createGameWithDestroyerShipAtCoordinate(new Coordinate(1,1), Orientation.Vertical);
+        board.shootAt(new Coordinate(2,2));
+        board.shootAt(new Coordinate(2,3));
+
+        Exception t = assertThrows(IllegalMoveException.class, () -> {
+            board.shootAt(new Coordinate(2,2));
+        });
+
+        assertEquals("A previous move at coordinate Coordinate{x=2, y=2}, has already been done! Select an empty slot", t.getMessage());
+    }
+
+    private GameBoard createGameWithDestroyerShipAtCoordinate(Coordinate origin, Orientation orientation) throws ShipPlacementOnBoardException {
+        GameBoard board = new GameBoard(10, 15);
+        Ship ship = new Ship("Destroyer", 4);
+        board.placeShip(origin, orientation, ship);
+        return board;
+    }
 }

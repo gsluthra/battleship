@@ -4,14 +4,22 @@ import java.util.stream.Collectors;
 
 public class GameBoard {
 
+    public static final String OPEN_SEA = "~";
+    private static final String SHIP_AFLOAT = "S";
+    public static final String SHIP_HIT_SHOT = "$";
+    public static final String SHIP_SUNK_SHOT = "X";
+    public static final String SHOT_IN_SEA = "o";
+
     private final int length;
     private final int height;
     private Map<Ship, List<Coordinate>> shipsOnBoard;
+    private List<Coordinate> allMovesThatHaveBeenMade;
 
     public GameBoard(int length, int height) {
         this.length = length;
         this.height = height;
         this.shipsOnBoard = new HashMap<>();
+        this.allMovesThatHaveBeenMade = new ArrayList<>();
     }
 
     public int length() {
@@ -71,28 +79,46 @@ public class GameBoard {
             for (int j = 1; j <= this.length; j++) {
                 Coordinate coordinate = new Coordinate(j, i);
                 if (!isShipPresent(coordinate)) {
-                    System.out.printf("%-3s", "-");
+                    printNoShipHereSymbols(coordinate);
                     continue;
                 }
-                Ship s = getShipAt(coordinate);
-                if (s.isSunk())
-                    System.out.printf("%-3s", "!");
-                else if (s.isHitAt(coordinate))
-                    System.out.printf("%-3s", "o");
-                else
-                    System.out.printf("%-3s", "S");
+                printShipSymbols(coordinate);
             }
             System.out.println("");
         }
     }
 
-    public boolean shootAt(Coordinate bombCoordinates) {
+    private void printShipSymbols(Coordinate coordinate) {
+        Ship s = getShipAt(coordinate);
+        if (s.isSunk())
+            System.out.printf("%-3s", SHIP_SUNK_SHOT);
+        else if (s.isHitAt(coordinate))
+            System.out.printf("%-3s", SHIP_HIT_SHOT);
+        else
+            System.out.printf("%-3s", SHIP_AFLOAT);
+    }
+
+    private void printNoShipHereSymbols(Coordinate coordinate) {
+        if(isCoordinateAlreadyHit(coordinate))
+            System.out.printf("%-3s", SHOT_IN_SEA);
+        else
+            System.out.printf("%-3s", OPEN_SEA);
+    }
+
+    public boolean shootAt(Coordinate bombCoordinates) throws IllegalMoveException {
+        saveShotToBoardUnlessAlreadyMovedHere(bombCoordinates);
         boolean isShipHit = isShipPresent(bombCoordinates);
         if(isShipHit){
             Ship ship = getShipAt(bombCoordinates);
             ship.shootAt(bombCoordinates);
         }
         return isShipHit;
+    }
+
+    private void saveShotToBoardUnlessAlreadyMovedHere(Coordinate bombCoordinates) throws IllegalMoveException {
+        if(isCoordinateAlreadyHit(bombCoordinates))
+            throw new IllegalMoveException("A previous move at coordinate "+bombCoordinates + ", has already been done! Select an empty slot");
+        allMovesThatHaveBeenMade.add(bombCoordinates);
     }
 
     //----------- PRIVATE
@@ -150,5 +176,17 @@ public class GameBoard {
                 return s;
         }
         return null; //no ship at the specified coordinates
+    }
+
+    public boolean isCoordinateAlreadyHit(Coordinate coordinate) {
+        return allMovesThatHaveBeenMade.stream().anyMatch(c -> c.equals(coordinate));
+    }
+
+    public int getNumberOfShipsAfloat() {
+        return Math.toIntExact(this.shipsOnBoard.keySet().stream().filter(ship -> ship.isAfloat()).count());
+    }
+
+    public int getNumberOfShipsSunk() {
+        return shipsOnBoard.size() - getNumberOfShipsAfloat();
     }
 }
