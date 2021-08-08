@@ -17,9 +17,7 @@ public class Main {
 
         randomlyShootOnBoardUntilMaxTriesDoneOrShipsSunk(board);
         System.out.println("--- FINAL BOARD POSITION ---");
-        board.printBoard();
-        System.out.println("Ships Sunk: "+ board.getNumberOfShipsSunk());
-        System.out.println("Ships Not Sunk: "+ board.getNumberOfShipsAfloat());
+        board.printGameSummary();
         System.out.println("--- GAME OVER ---");
     }
 

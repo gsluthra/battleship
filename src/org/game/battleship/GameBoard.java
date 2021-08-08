@@ -13,6 +13,13 @@ public class GameBoard {
     public static final String SHIP_SUNK_SHOT = "X";
     public static final String SHOT_IN_SEA = "o";
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+
+
+
     private final int length;
     private final int height;
     private Map<Ship, List<Coordinate>> shipsOnBoard;
@@ -73,6 +80,7 @@ public class GameBoard {
     }
 
     public void printBoard() {
+
         System.out.println("**************** BOARD *********************");
         printBoardRowHeader();
 
@@ -91,19 +99,25 @@ public class GameBoard {
         }
     }
 
+    public void printGameSummary(){
+        printBoard();
+        System.out.println("Ships Sunk: "+ANSI_RED+ this.getNumberOfShipsSunk()+ANSI_RESET);
+        System.out.println("Ships Not Sunk: "+ ANSI_GREEN + this.getNumberOfShipsAfloat() + ANSI_GREEN);
+    }
+
     private void printShipSymbols(Coordinate coordinate) {
         Ship s = getShipAt(coordinate);
         if (s.isSunk())
-            System.out.printf("%-3s", SHIP_SUNK_SHOT);
+            System.out.printf(ANSI_RED+"%-3s"+ANSI_RESET, SHIP_SUNK_SHOT);
         else if (s.isHitAt(coordinate))
-            System.out.printf("%-3s", SHIP_HIT_SHOT);
+            System.out.printf(ANSI_GREEN+"%-3s"+ANSI_RESET, SHIP_HIT_SHOT);
         else
-            System.out.printf("%-3s", SHIP_AFLOAT);
+            System.out.printf(ANSI_GREEN+"%-3s"+ANSI_RESET, SHIP_AFLOAT);
     }
 
     private void printNoShipHereSymbols(Coordinate coordinate) {
         if(isCoordinateAlreadyHit(coordinate))
-            System.out.printf("%-3s", SHOT_IN_SEA);
+            System.out.printf(ANSI_BLUE+"%-3s"+ANSI_RESET, SHOT_IN_SEA);
         else
             System.out.printf("%-3s", OPEN_SEA);
     }
