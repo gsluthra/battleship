@@ -1,5 +1,8 @@
 package org.game.battleship;
 
+import org.game.battleship.exceptions.IllegalMoveException;
+import org.game.battleship.exceptions.ShipPlacementOnBoardException;
+
 import java.util.Random;
 
 public class Main {
@@ -31,7 +34,6 @@ public class Main {
             if(board.getNumberOfShipsAfloat()<=0)
                 break;
         }
-
     }
 
     private static void randomlyPlaceShipsOnBoard(GameBoard board, int numberOfShipsToPlace) {

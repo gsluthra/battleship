@@ -1,4 +1,7 @@
 package org.game.battleship;
+import org.game.battleship.exceptions.IllegalMoveException;
+import org.game.battleship.exceptions.ShipPlacementOnBoardException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 

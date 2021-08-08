@@ -1,5 +1,7 @@
 package org.game.battleship;
 
+import org.game.battleship.exceptions.IllegalMoveException;
+import org.game.battleship.exceptions.ShipPlacementOnBoardException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
