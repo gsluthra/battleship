@@ -1,6 +1,9 @@
 package org.game.battleship;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Ship {
@@ -27,9 +30,7 @@ public class Ship {
         }
     }
 
-
     public boolean isSunk() {
-
         return !isAfloat;
     }
 
@@ -43,8 +44,7 @@ public class Ship {
 
     public boolean shootAt(Coordinate coordinate) {
 
-        for (int i = 0; i < shipBlocks.size(); i++) {
-            ShipBlock block = shipBlocks.get(i);
+        for (ShipBlock block : shipBlocks) {
             if (block.coordinate.equals(coordinate)) {
                 block.isExploded = true;
                 markAsSunkIfAllBlocksExploded();
@@ -55,14 +55,27 @@ public class Ship {
         return false; //No block of ship was hit
     }
 
+    public boolean isAt(Coordinate passedCoordinates) {
+        return shipBlocks.stream().anyMatch(shipBlock -> shipBlock.coordinate.equals(passedCoordinates) );
+    }
+
+    public boolean isHitAt(Coordinate passedCoordinates) {
+        Optional<ShipBlock> optionShipBlock = shipBlocks.stream().filter(shipBlock -> shipBlock.coordinate.equals(passedCoordinates)).findFirst();
+        if(optionShipBlock.isEmpty())
+            return false;
+
+        return optionShipBlock.get().isExploded;
+    }
+
     public String getName() {
         return name;
     }
 
-    public int getSize() {
+    public int size() {
         return size;
     }
 
+    // ----------------- PRIVATE
     private void markAsSunkIfAllBlocksExploded() {
         Stream<ShipBlock> temp = (shipBlocks.stream().filter(block-> !block.isExploded));
         isAfloat = temp.count() > 0;
