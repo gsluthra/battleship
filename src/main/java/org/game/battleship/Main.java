@@ -48,7 +48,7 @@ public class Main {
             Coordinate c = new Coordinate(x,y);
             try {
                 boolean hit = board.shootAt(c);
-                System.out.println("["+(i+1)+"]"+"Shooting at: "+ c + " STATUS = "+ ((hit)?"Missed":"Hit!"));
+                System.out.println("["+(i+1)+"]"+"Shooting at: "+ c + " STATUS = "+ ((hit)?"Hit!":"Missed"));
             } catch (IllegalMoveException ex) {
                 System.out.println(ex.getMessage());
             }
