@@ -1,5 +1,7 @@
 /out/
+*/out/**
 /target/
+*/target/**
 # Compiled class file
 *.class
 

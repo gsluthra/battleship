@@ -21,5 +21,5 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots compile test"
+        run: mvn --batch-mode --update-snapshots compile test
       - run: echo "🍏 This job's status is ${{ job.status }}."
