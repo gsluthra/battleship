@@ -5,6 +5,9 @@ import org.game.battleship.exceptions.ShipPlacementOnBoardException;
 
 import java.util.Random;
 
+import static org.game.battleship.Colorize.inRed;
+import static org.game.battleship.Colorize.inYellow;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -13,11 +16,12 @@ public class Main {
 
         GameBoard board = new GameBoard(10,10);
         randomlyPlaceShipsOnBoard(board, 4);
-        board.printBoard();
+        BattleshipConsolePrinter printer = new BattleshipConsolePrinter(board);
+        printer.printBoard();
 
         randomlyShootOnBoardUntilMaxTriesDoneOrShipsSunk(board);
         System.out.println("--- FINAL BOARD POSITION ---");
-        board.printGameSummary();
+        printer.printBoardSummary();
         System.out.println("--- GAME OVER ---");
     }
 
@@ -48,9 +52,10 @@ public class Main {
             Coordinate c = new Coordinate(x,y);
             try {
                 boolean hit = board.shootAt(c);
-                System.out.println("["+(i+1)+"]"+"Shooting at: "+ c + " STATUS = "+ ((hit)?"Hit!":"Missed"));
+                System.out.println("["+(i+1)+"]"+"Shot at: "+ c + " STATUS = "+ ((hit)?inRed("Hit!"):inYellow("Missed")));
             } catch (IllegalMoveException ex) {
                 System.out.println(ex.getMessage());
+                i--; //If this move has already been done, then retry. For random algo, this will happen a lot!
             }
             if(board.getNumberOfShipsAfloat()<=0) //All Sunk
                 break;
