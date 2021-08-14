@@ -3,11 +3,11 @@ package org.game.battleship;
 public class BattleshipConsolePrinter {
     private final GameBoard board;
 
-    public static final String OPEN_SEA = "~";
+    private static final String OPEN_SEA = "~";
     private static final String SHIP_AFLOAT = "S";
-    public static final String SHIP_HIT_SHOT = "$";
-    public static final String SHIP_SUNK_SHOT = "X";
-    public static final String SHOT_IN_SEA = "o";
+    private static final String SHIP_HIT_SHOT = "$";
+    private static final String SHIP_SUNK_SHOT = "X";
+    private static final String SHOT_IN_SEA = "o";
 
     public BattleshipConsolePrinter(GameBoard gameBoard) {
         this.board = gameBoard;
