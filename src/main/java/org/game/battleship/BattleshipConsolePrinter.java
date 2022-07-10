@@ -4,9 +4,9 @@ public class BattleshipConsolePrinter {
     private final GameBoard board;
 
     private static final String OPEN_SEA = "~";
-    private static final String SHIP_AFLOAT = "S";
-    private static final String SHIP_HIT_SHOT = "$";
-    private static final String SHIP_SUNK_SHOT = "X";
+    private static final String SHIP_AFLOAT = "[.]";
+    private static final String SHIP_HIT_SHOT = "[x]";
+    private static final String SHIP_SUNK_SHOT = "#";
     private static final String SHOT_IN_SEA = "o";
 
     public BattleshipConsolePrinter(GameBoard gameBoard) {
@@ -38,9 +38,9 @@ public class BattleshipConsolePrinter {
         if (s.isSunk())
             Colorize.printCellInRed(SHIP_SUNK_SHOT);
         else if (s.isHitAt(coordinate))
-            Colorize.printCellInGreen(SHIP_HIT_SHOT);
+            Colorize.printCellInBlue(SHIP_HIT_SHOT);
         else
-            Colorize.printCellInBlue(SHIP_AFLOAT);
+            Colorize.printCellInGreen(SHIP_AFLOAT);
     }
 
     private void printNoShipHereSymbols(Coordinate coordinate) {

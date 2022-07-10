@@ -10,12 +10,15 @@ import static org.game.battleship.Colorize.inYellow;
 
 public class Main {
 
+    private static final int MAX_SHIPS_ON_BOARD = 4;
+    private static final int MAX_SHOOTING_TRIES = 50;
+
     public static void main(String[] args) {
         System.out.println("Battleship Game");
         System.out.println("---------------------");
 
         GameBoard board = new GameBoard(10,10);
-        randomlyPlaceShipsOnBoard(board, 4);
+        randomlyPlaceShipsOnBoard(board);
         BattleshipConsolePrinter printer = new BattleshipConsolePrinter(board);
         printer.printBoard();
 
@@ -26,9 +29,9 @@ public class Main {
     }
 
     //------- ALL PRIVATE
-    private static void randomlyPlaceShipsOnBoard(GameBoard board, int numberOfShipsToPlace) {
+    private static void randomlyPlaceShipsOnBoard(GameBoard board) {
         int maxTries = 0;
-        for(int i=1; i<= numberOfShipsToPlace && maxTries <100; i++, maxTries++){
+        for(int i=1; i<= MAX_SHIPS_ON_BOARD && maxTries <100; i++, maxTries++){
             Ship ship = new Ship("Ship-"+i, getRandomSize());
             Orientation randomOrientation = getRandomOrientation();
             Coordinate randomCoordinates = randomLocation(board.length(), board.height(), randomOrientation, ship.size());
@@ -45,8 +48,8 @@ public class Main {
 
     private static void randomlyShootOnBoardUntilMaxTriesDoneOrShipsSunk(GameBoard board) {
         Random random = new Random();
-        int MAX_TRIES = 50;
-        for (int i = 0; i < MAX_TRIES; i++) {
+
+        for (int i = 0; i < MAX_SHOOTING_TRIES; i++) {
             int x = 1+random.nextInt(board.length()-1);
             int y = 1+random.nextInt(board.height()-1);
             Coordinate c = new Coordinate(x,y);
