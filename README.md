@@ -1,4 +1,4 @@
-# battleship
+# battleship game
 [![Build Status](https://github.com/gsluthra/battleship/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/gsluthra/battleship/actions/workflows/github-actions-build.yml)
 
 Code to model a battleship game.
